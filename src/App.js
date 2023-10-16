@@ -1,24 +1,61 @@
-import logo from './logo.svg';
+import React, { useState } from 'react';
 import './App.css';
+import MenuLeftAcc from './components/Account/MenuLeftAcc/MenuLeftAcc';
+import Footer from './components/Footer';
+import Header from './components/Header';
+import MenuLeft from './components/MenuLeft';
+import { useLocation } from 'react-router-dom';
+import { DataContext } from './components/MyContext';
 
-function App() {
+
+function App(props) {
+  let params1 = useLocation()
+  
+  const [tongQty,setTongQty] = useState(0)
+  const [totalWish,setTotalWish] = useState(0)
+
+  function getQty(data){
+    //console.log(data)
+    setTongQty(data)
+  }
+
+  function getWishQty(data){
+    //console.log(data)
+    setTotalWish(data)
+  }
+
+  function renderMenuLeft(){
+    if(params1["pathname"].includes("account") || params1["pathname"].includes("product") || params1["pathname"].includes("myProducts")){
+      return <MenuLeftAcc/>
+    }
+    else if(params1["pathname"].includes("cart")){
+      return null
+    }
+    else{
+      return <MenuLeft/> 
+    }
+  }
+
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+    <DataContext.Provider value={
+      {tongQty:tongQty,getQty:getQty,totalWish:totalWish,getWishQty:getWishQty}
+    }  >
+      <Header/>
+          <section>
+              <div className='container'>
+                <div className='row' >
+                  {renderMenuLeft()}
+                  {props.children}
+                </div>
+              </div>
+          </section>
+          <Footer/>
+    </DataContext.Provider>
+
+
+    </>
   );
 }
 
